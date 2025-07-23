@@ -1,3 +1,4 @@
+import { HomeScreenButtons } from "#/components/home/home-screen-buttons";
 import { HydrateClient } from "#/trpc/server";
 
 export default async function Home() {
@@ -26,6 +27,7 @@ export default async function Home() {
               configuration to link the rest to eachother.
             </p>
           </div>
+          <HomeScreenButtons />
         </div>
       </main>
     </HydrateClient>
