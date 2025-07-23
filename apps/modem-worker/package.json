@@ -1,0 +1,28 @@
+{
+  "name": "modem-worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm with-env tsx src/index.ts",
+    "with-env": "dotenv -e ../../.env --",
+    "start": "pnpm with-env tsx src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "bullmq": "^5.56.3",
+    "dotenv": "^17.2.0",
+    "ioredis": "^5.6.1",
+    "node-pdu": "^2.1.1",
+    "serialport": "^13.0.0"
+  },
+  "devDependencies": {
+    "@serialsms/eslint-config": "workspace:*",
+    "@serialsms/queue": "workspace:*",
+    "@serialsms/typescript-config": "workspace:*",
+    "tsup": "^8.5.0"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@serialsms/database",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/client.ts"
+  },
+  "scripts": {
+    "db:migrate:deploy": "pnpm with-env prisma migrate deploy",
+    "db:migrate:dev": "pnpm with-env prisma migrate dev",
+    "db:push": "pnpm with-env prisma db push",
+    "db:seed": "tsx src/seed.ts",
+    "dev": "tsup src/* --watch",
+    "format": "prisma format",
+    "generate": "pnpm with-env prisma generate",
+    "lint": "eslint . --max-warnings 0",
+    "prebuild": "pnpm with-env prisma generate",
+    "predev": "prisma generate",
+    "studio": "pnpm with-env prisma studio",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@prisma/client": "latest"
+  },
+  "devDependencies": {
+    "@serialsms/eslint-config": "workspace:*",
+    "@serialsms/typescript-config": "workspace:*",
+    "eslint": "^8.57.0",
+    "prisma": "latest",
+    "rimraf": "^5.0.5",
+    "tsup": "^8.0.2",
+    "tsx": "4.19.1",
+    "typescript": "5.5.4"
+  }
+}

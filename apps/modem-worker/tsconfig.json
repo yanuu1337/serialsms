@@ -1,0 +1,17 @@
+{
+    "extends": "@serialsms/typescript-config/base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "#/*": ["./src/*"]
+        }
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.cjs",
+        "src/**/*.js",
+        ".next/types/**/*.ts"
+    ],
+    "exclude": ["node_modules"]
+}
