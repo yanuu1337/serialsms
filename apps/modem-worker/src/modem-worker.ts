@@ -109,7 +109,9 @@ export class ModemWorker {
   }
 
   public async sendTestMessages(phoneNumber: string): Promise<void> {
-    const testMessages = ["System SMS najprawdopodobniej działa poprawnie."];
+    const testMessages = [
+      "Initial test message - if you received this, the modem is working :)",
+    ];
 
     for (const message of testMessages) {
       try {
