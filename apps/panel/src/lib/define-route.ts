@@ -1,7 +1,12 @@
 import { z, ZodSchema } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { BadRequestError, UnauthorizedError } from "./api-response";
+import {
+  ApiResponse,
+  BadRequestError,
+  InternalServerError,
+  UnauthorizedError,
+} from "./api-response";
 import { prisma, User } from "@serialsms/database";
 import { hashToken } from "./auth/token";
 import dayjs from "dayjs";
@@ -110,10 +115,17 @@ export function defineRoute<TSchema extends ZodSchema<any>>(
 
     // Type-safe: if schema is present, parsed is always defined and success is true
     // If schema is not present, input is always undefined
-    return handler({
-      input: schema ? parsed!.data : undefined,
-      req,
-      user: token.user,
-    });
+    try {
+      return handler({
+        input: schema ? parsed!.data : undefined,
+        req,
+        user: token.user,
+      });
+    } catch (error) {
+      console.error(error);
+      return new InternalServerError(
+        "Internal server error. See logs for more details.",
+      ).toResponse();
+    }
   };
 }

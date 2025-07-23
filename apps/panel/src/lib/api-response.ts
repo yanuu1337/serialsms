@@ -48,3 +48,8 @@ export class BadRequestError extends ApiError {
     super(message, 400, data);
   }
 }
+export class InternalServerError extends ApiError {
+  constructor(message: string, data?: any) {
+    super(message, 500, data);
+  }
+}
