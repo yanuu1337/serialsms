@@ -40,15 +40,29 @@ model User {
 }
 
 model Sms {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String      @id
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   senderId  String
   receiver  String
-  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  sender    User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
   content   String?
+  contact   SmsContact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String?
 
   @@map("sms")
+}
+
+model SmsContact {
+  id          String   @id
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  phoneNumber String
+  userId      String
+  Sms         Sms[]
+
+  @@map("sms_contact")
 }
 
 model ApiToken {
