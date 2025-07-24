@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "#/components/ui/sidebar";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { QuickComposeModal } from "./quick-compose-modal";
 
 export function NavMain({
@@ -29,6 +29,7 @@ export function NavMain({
     }
     return pathname.startsWith(url);
   };
+  const router = useRouter();
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -55,7 +56,13 @@ export function NavMain({
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
+            <SidebarMenuItem
+              key={item.title}
+              onClick={() => {
+                router.push(item.url);
+              }}
+              className="cursor-pointer hover:underline hover:underline-offset-2"
+            >
               <SidebarMenuButton
                 tooltip={item.title}
                 isActive={isActiveUrl(item.url)}
