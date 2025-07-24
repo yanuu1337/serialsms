@@ -1,6 +1,6 @@
 import { api } from "#/trpc/server";
 import dayjs from "dayjs";
-import { Stats } from "./stats";
+import { Stats } from "#/components/dashboard/home/stats";
 
 export default async function Page() {
   const smsStats = await api.stats.getMonthlyStatistics({
