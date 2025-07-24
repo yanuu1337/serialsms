@@ -6,6 +6,10 @@
 .env.local
 
 
+# Prisma build
+dist/
+generated/
+
 # dependencies
 node_modules
 .pnp
