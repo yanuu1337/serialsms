@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react";
 
@@ -24,6 +22,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "#/components/ui/sidebar";
+import { authClient } from "#/lib/auth/client";
+import { useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -35,7 +35,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-
+  const router = useRouter();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -84,17 +84,14 @@ export function NavUser({
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                authClient.signOut();
+                router.push("/");
+              }}
+            >
               <IconLogout />
               Log out
             </DropdownMenuItem>
