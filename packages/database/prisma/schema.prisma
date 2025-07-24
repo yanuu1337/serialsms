@@ -16,7 +16,7 @@ generator client {
 //
 
 model User {
-  id              String     @id
+  id              String       @id
   name            String
   email           String
   emailVerified   Boolean
@@ -33,6 +33,7 @@ model User {
   accounts        Account[]
   sms             Sms[]
   apiToken        ApiToken[]
+  smsContacts     SmsContact[]
 
   @@unique([email])
   @@unique([username])
@@ -59,7 +60,8 @@ model SmsContact {
   updatedAt   DateTime @updatedAt
   name        String
   phoneNumber String
-  userId      String
+  creatorId   String?
+  creator     User?    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   Sms         Sms[]
 
   @@map("sms_contact")
