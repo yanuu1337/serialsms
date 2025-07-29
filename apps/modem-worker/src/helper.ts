@@ -1,6 +1,4 @@
 import { Submit } from "node-pdu";
-// @ts-ignore
-import splitSMS from "split-sms";
 
 export interface PDUResult {
   submit: Submit;
