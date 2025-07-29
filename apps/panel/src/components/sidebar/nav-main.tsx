@@ -1,6 +1,8 @@
 "use client";
 
 import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
+import { Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 
 import { Button } from "#/components/ui/button";
 import {
@@ -23,13 +25,26 @@ export function NavMain({
   }[];
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loadingUrl, setLoadingUrl] = useState<string | null>(null);
+
   const isActiveUrl = (url: string) => {
     if (url === "/") {
       return pathname === "/";
     }
     return pathname.startsWith(url);
   };
-  const router = useRouter();
+
+  // Clear loading state when navigation completes
+  useEffect(() => {
+    setLoadingUrl(null);
+  }, [pathname]);
+
+  const handleNavigation = (url: string) => {
+    setLoadingUrl(url);
+    router.push(url);
+  };
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -55,23 +70,33 @@ export function NavMain({
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem
-              key={item.title}
-              onClick={() => {
-                router.push(item.url);
-              }}
-              className="cursor-pointer hover:underline hover:underline-offset-2"
-            >
-              <SidebarMenuButton
-                tooltip={item.title}
-                isActive={isActiveUrl(item.url)}
+          {items.map((item) => {
+            const isLoading = loadingUrl === item.url;
+            return (
+              <SidebarMenuItem
+                key={item.title}
+                onClick={() => {
+                  if (!isLoading) {
+                    handleNavigation(item.url);
+                  }
+                }}
+                className="cursor-pointer hover:underline hover:underline-offset-2"
               >
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  isActive={isActiveUrl(item.url)}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    item.icon && <item.icon />
+                  )}
+                  <span>{item.title}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
