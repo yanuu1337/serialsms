@@ -1,8 +1,16 @@
 import { Submit } from "node-pdu";
+// @ts-ignore
+import splitSMS from "split-sms";
 
 export interface PDUResult {
+  submit: Submit;
   pdu: string;
-  length: number;
+}
+
+export interface SplitPDUResult {
+  pdus: PDUResult[];
+  totalMessages: number;
+  messageReference: number;
 }
 
 /**
@@ -14,25 +22,8 @@ export function safeSubmitPDU(to: string, text: string): PDUResult {
     const submit = new Submit(to, text);
     const pdu = submit.toString();
 
-    console.log(`[HELPER] Data coding scheme: ${submit.dataCodingScheme}`);
-
-    if (pdu.length % 2 !== 0) {
-      throw new Error(`Invalid PDU: hex string has odd length (${pdu.length})`);
-    }
-
-    const smscLen = parseInt(pdu.slice(0, 2), 16);
-    const totalOctets = pdu.length / 2;
-    const length = totalOctets - (smscLen + 1);
-
-    if (!Number.isInteger(length) || length <= 0) {
-      throw new Error(`Invalid TPDU length: ${length}`);
-    }
-
-    console.log(
-      `[HELPER] PDU generated successfully - SMSC length: ${smscLen}, TPDU length: ${length}`
-    );
-
-    return { pdu, length };
+    console.log(`[HELPER] PDU generated successfully.`);
+    return { submit, pdu };
   } catch (err) {
     console.error(`[HELPER] Error generating PDU for ${to}:`, err);
     throw err;

@@ -20,7 +20,7 @@ export class ModemManager {
   private waitFor?: {
     resolve: (data: string) => void;
     reject: (err: Error) => void;
-    expected: string;
+    expected: string | null;
     timeout: NodeJS.Timeout;
   };
   private options: Required<ModemManagerOptions>;
@@ -80,7 +80,11 @@ export class ModemManager {
     this.buffer += text;
     console.log("[MODEM-MANAGER] <<<", text.trim());
 
-    if (this.waitFor && this.buffer.includes(this.waitFor.expected)) {
+    if (
+      this.waitFor &&
+      this.waitFor.expected &&
+      this.buffer.includes(this.waitFor.expected)
+    ) {
       clearTimeout(this.waitFor.timeout);
       this.waitFor.resolve(this.buffer.trim());
       this.buffer = "";
@@ -277,7 +281,10 @@ export class ModemManager {
 
   public onSMS?: (msg: SMSMessage) => void;
 
-  public async sendAT(command: string, expect: string = "OK"): Promise<string> {
+  public async sendAT(
+    command: string,
+    expect: string | null = "OK"
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
       if (this.waitFor) {
         return reject(new Error("Modem is busy"));
@@ -286,16 +293,19 @@ export class ModemManager {
       this.buffer = "";
       this.port.write(command + "\r");
 
-      this.waitFor = {
-        expected: expect,
-        resolve,
-        reject,
-        timeout: setTimeout(() => {
-          const error = new Error(`Timeout waiting for response to ${command}`);
-          this.waitFor = undefined;
-          reject(error);
-        }, this.options.timeout),
-      };
+      if (expect)
+        this.waitFor = {
+          expected: expect,
+          resolve,
+          reject,
+          timeout: setTimeout(() => {
+            const error = new Error(
+              `Timeout waiting for response to ${command}`
+            );
+            this.waitFor = undefined;
+            reject(error);
+          }, this.options.timeout),
+        };
     });
   }
 
@@ -305,14 +315,29 @@ export class ModemManager {
     }
 
     try {
-      const { pdu, length } = safeSubmitPDU(to, text);
+      console.log(`[MODEM-MANAGER] Sending SMS to ${to}`);
 
-      console.log(`[MODEM-MANAGER] Sending SMS to ${to} (length: ${length})`);
+      // Use splitLongPDU to handle long messages
+      const submit = safeSubmitPDU(to, text);
 
-      await this.sendAT(`AT+CMGS=${length}`, ">");
-      await this.sendAT(pdu + String.fromCharCode(26), "OK");
-
-      console.log(`[MODEM-MANAGER] SMS sent successfully to ${to}`);
+      const parts = submit.submit.getParts();
+      const partStrings = submit.submit.getPartStrings();
+      // if (parts.length === 1) {
+      //   await this.sendAT(`AT+CMGS=${parts[0].size}`, ">");
+      //   await this.sendAT(
+      //     submit.submit.getPartStrings()[0] + String.fromCharCode(26)
+      //   );
+      //   console.log(`[MODEM-MANAGER] SMS sent successfully to ${to}`);
+      //   return;
+      // }
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        await this.sendAT(`AT+CMGS=${part.size}`, ">");
+        await this.sendAT(partStrings[i] + String.fromCharCode(26));
+        console.log(
+          `[MODEM-MANAGER] SMS part ${i + 1}/${parts.length} sent successfully to ${to}`
+        );
+      }
     } catch (err) {
       console.error(`[MODEM-MANAGER] Failed to send SMS to ${to}:`, err);
       throw err;
