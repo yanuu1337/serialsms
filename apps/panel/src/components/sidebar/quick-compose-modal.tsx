@@ -10,16 +10,19 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { PhoneNumberFormatter } from "../phone-number-formatter";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Textarea } from "../ui/textarea";
 import { api } from "#/trpc/react";
 
 export const QuickComposeModal = ({
   children,
+  initialPhoneNumber,
 }: {
   children: React.ReactNode;
+  initialPhoneNumber?: string;
 }) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber || "");
+  const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
@@ -44,10 +47,17 @@ export const QuickComposeModal = ({
     });
   };
 
+  useEffect(() => {
+    if (open && initialPhoneNumber) {
+      setPhoneNumber(initialPhoneNumber);
+      messageInputRef.current?.focus();
+    }
+  }, [open, initialPhoneNumber, messageInputRef]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <IconMessageCircle />
@@ -65,6 +75,7 @@ export const QuickComposeModal = ({
           <Textarea
             placeholder="Message"
             rows={10}
+            ref={messageInputRef}
             value={message}
             minLength={1}
             onChange={(e) => setMessage(e.target.value)}
