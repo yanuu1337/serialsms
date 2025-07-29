@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 
 export default function Page() {
-  return redirect("/dashboard/home");
+  return redirect("/dashboard/home", RedirectType.replace);
 }
