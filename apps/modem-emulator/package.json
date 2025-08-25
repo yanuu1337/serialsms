@@ -1,0 +1,18 @@
+{
+  "name": "@serialsms/modem-emulator",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "modem-emulator": "./bin/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx ./bin/cli.ts"
+  },
+  "dependencies": {
+    "serialport": "^12.0.0"
+  },
+  "devDependencies": {
+    "@serialsms/typescript-config": "workspace:*",
+    "typescript": "^5.5.0"
+  }
+}

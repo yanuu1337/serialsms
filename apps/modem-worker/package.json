@@ -23,6 +23,7 @@
     "@serialsms/eslint-config": "workspace:*",
     "@serialsms/queue": "workspace:*",
     "@serialsms/typescript-config": "workspace:*",
+    "concurrently": "^9.2.0",
     "tsup": "^8.5.0"
   }
 }

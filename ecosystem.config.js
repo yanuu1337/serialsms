@@ -10,7 +10,7 @@ module.exports = {
       namespace: 'serialsms',
       name: 'web-panel',
       script: 'pnpm start',
-      cwd: '/apps/panel',
+      cwd: './apps/panel',
       watch: ".",
 
 
