@@ -5,6 +5,8 @@ import {
   IconDashboard,
   IconMessageCircle,
   IconSettings,
+  IconUsers,
+  IconSend,
 } from "@tabler/icons-react";
 
 import { NavMain } from "#/components/sidebar/nav-main";
@@ -25,6 +27,16 @@ const data = {
       title: "Main page",
       url: "/dashboard/home",
       icon: IconDashboard,
+    },
+    {
+      title: "Contacts",
+      url: "/dashboard/contacts",
+      icon: IconUsers,
+    },
+    {
+      title: "Bulk Send",
+      url: "/dashboard/bulk-send",
+      icon: IconSend,
     },
   ],
 
